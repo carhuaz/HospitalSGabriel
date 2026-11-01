@@ -96,3 +96,13 @@ uv run pytest -v
 | | `GET /api/indicadores/stock-bajo` | Productos con stock igual o inferior al stock mínimo |
 | | `GET /api/indicadores/vencimientos` | Productos y lotes próximos a vencer y vencidos |
 | | `GET /api/indicadores/mayores-salidas` | Productos con mayores salidas en un periodo |
+
+---
+
+## Usuarios por Defecto y Roles del Sistema (`dbo.Usuarios`)
+
+| Usuario (`username`) | Contraseña (`password`) | Rol (`rol`) | Responsabilidad en el Sistema |
+|---|---|---|---|
+| `admin` | `admin123` | `Administrador` | Gestión total (categorías, productos, entradas, salidas, bajas lógicas, historial e indicadores). |
+| `farmacia` | `farmacia123` | `Farmacia` | Dispensación hospitalaria: consulta de catálogo/lotes, alertas de vencimientos y registro de **Salidas** hacia áreas del hospital. |
+| `almacen` | `almacen123` | `Almacén` | Abastecimiento: gestión de productos/categorías y registro de **Entradas** por compras, donaciones o devoluciones. |

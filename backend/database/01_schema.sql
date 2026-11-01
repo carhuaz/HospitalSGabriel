@@ -230,4 +230,16 @@ BEGIN
     INSERT INTO dbo.Usuarios (username, password_hash, nombre_completo, rol)
     VALUES (N'admin', N'admin123', N'Administrador Hospital San Gabriel', N'Administrador');
 END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Usuarios WHERE username = N'farmacia')
+BEGIN
+    INSERT INTO dbo.Usuarios (username, password_hash, nombre_completo, rol)
+    VALUES (N'farmacia', N'farmacia123', N'Encargado de Farmacia y Dispensación', N'Farmacia');
+END
+
+IF NOT EXISTS (SELECT 1 FROM dbo.Usuarios WHERE username = N'almacen')
+BEGIN
+    INSERT INTO dbo.Usuarios (username, password_hash, nombre_completo, rol)
+    VALUES (N'almacen', N'almacen123', N'Responsable de Almacén Hospitalario', N'Almacén');
+END
 GO

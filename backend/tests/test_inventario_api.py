@@ -28,6 +28,21 @@ def test_categorias_endpoints():
     assert "Material Médico" in nombres
 
 
+def test_autenticacion_roles_hospitalarios():
+    credenciales = [
+        ("admin", "admin123", "Administrador"),
+        ("farmacia", "farmacia123", "Farmacia"),
+        ("almacen", "almacen123", "Almacén"),
+    ]
+    for username, password, rol_esperado in credenciales:
+        r = client.post("/api/auth/login", json={"username": username, "password": password})
+        assert r.status_code == 200, r.text
+        data = r.json()
+        assert data["username"] == username
+        assert data["rol"] == rol_esperado
+        assert data["activo"] is True
+
+
 def test_flujo_completo_y_reglas_de_negocio():
     sufijo = uuid.uuid4().hex[:6].upper()
     codigo_test = f"TEST-{sufijo}"
