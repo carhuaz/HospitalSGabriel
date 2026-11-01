@@ -1,0 +1,13 @@
+import { Component, signal } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+
+@Component({
+  selector: 'app-root',
+  imports: [RouterOutlet],
+  templateUrl: './app.html',
+  styleUrl: './app.css'
+})
+export class App {
+  protected readonly hospitalName = signal('Hospital San Gabriel');
+  protected readonly systemTitle = signal('Sistema de Inventario Hospitalario');
+}
