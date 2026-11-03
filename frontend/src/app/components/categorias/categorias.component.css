@@ -1,0 +1,43 @@
+:host {
+  display: block;
+}
+
+.list-card {
+  --hsg-list-max-height: 34rem;
+}
+
+/* Nombre de la categoría como dato principal de la fila */
+.list-card .table td.fw-semibold {
+  color: #1d3c4a;
+}
+
+/* Columna de descripción: evita filas desproporcionadas */
+.list-card .table td:nth-child(2) {
+  max-width: 22rem;
+  color: var(--hsg-muted);
+}
+
+/* Fecha de creación: no debe partirse en dos líneas */
+.list-card .table td:nth-child(5) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+  color: var(--hsg-muted);
+}
+
+.list-card .badge {
+  min-width: 4.6rem;
+}
+
+@media (max-width: 1399.98px) {
+  /* Portátiles: tabla un punto más compacta */
+  .list-card .table > thead th,
+  .list-card .table > tbody > tr > td {
+    padding: 0.65rem 0.55rem;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .list-card {
+    --hsg-list-max-height: none;
+  }
+}

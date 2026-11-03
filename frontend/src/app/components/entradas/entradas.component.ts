@@ -35,6 +35,7 @@ interface FiltrosEntradaForm {
   selector: 'app-entradas',
   imports: [FormField, FormRoot],
   templateUrl: './entradas.component.html',
+  styleUrl: './entradas.component.css',
 })
 export class Entradas implements OnInit {
   private readonly entradaService = inject(EntradaService);

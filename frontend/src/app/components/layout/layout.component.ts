@@ -7,6 +7,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-layout',
   imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './layout.component.html',
+  styleUrl: './layout.component.css',
 })
 export class Layout {
   private readonly authService = inject(AuthService);

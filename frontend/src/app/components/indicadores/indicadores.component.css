@@ -1,0 +1,64 @@
+:host {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Tarjetas de resumen
+   -------------------------------------------------------------------------- */
+
+.stat-card .card-body {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  min-height: 6.5rem;
+}
+
+/* --------------------------------------------------------------------------
+   Listados con filtros propios
+   -------------------------------------------------------------------------- */
+
+.list-card {
+  --hsg-list-max-height: 26rem;
+}
+
+.list-card .card-body.border-bottom .form-label {
+  font-size: 0.75rem;
+}
+
+.list-card .table td small {
+  display: block;
+  font-size: 0.76rem;
+}
+
+/* Tabla compacta: la tarjeta comparte fila con otra de 6/12 */
+.list-card .table > thead th,
+.list-card .table > tbody > tr > td {
+  padding: 0.65rem 0.6rem;
+}
+
+/* Insignias de estado: caben en una tarjeta de 6/12 */
+.list-card .table .badge {
+  padding: 0.35em 0.6em;
+  font-size: 0.65rem;
+  font-weight: 600;
+  letter-spacing: 0;
+}
+
+@media (max-width: 1399.98px) {
+  /* Portátiles: tabla e insignias un punto más compactas */
+  .list-card .table > thead th,
+  .list-card .table > tbody > tr > td {
+    padding: 0.65rem 0.45rem;
+  }
+
+  .list-card .table .badge {
+    padding: 0.3em 0.5em;
+    font-size: 0.62rem;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .list-card {
+    --hsg-list-max-height: none;
+  }
+}

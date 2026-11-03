@@ -1,0 +1,86 @@
+:host {
+  display: block;
+}
+
+/* --------------------------------------------------------------------------
+   Filtros
+   -------------------------------------------------------------------------- */
+
+.filters-card .form-check {
+  padding-left: 2.4rem;
+}
+
+/* --------------------------------------------------------------------------
+   Listado de productos
+   -------------------------------------------------------------------------- */
+
+.list-card {
+  --hsg-list-max-height: 32rem;
+}
+
+/* Tabla densa: seis columnas en una tarjeta de 7/12 */
+.list-card .table > thead th,
+.list-card .table > tbody > tr > td {
+  padding: 0.7rem 0.6rem;
+}
+
+/* Código del producto, dato identificador de la fila */
+.list-card .table td:first-child {
+  font-family: 'Cascadia Code', 'Consolas', monospace;
+  font-size: 0.82rem;
+  color: var(--hsg-primary-dark);
+  white-space: nowrap;
+}
+
+/* Precio: importe que no debe partirse */
+.list-card .table td:nth-child(3) {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.list-card .table td small {
+  display: block;
+  font-size: 0.76rem;
+}
+
+.list-card .badge {
+  min-width: 2.4rem;
+}
+
+/* Acciones: los botones no se estiran ni se separan de su fila */
+.list-card .table td:last-child .btn {
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Lotes del producto seleccionado
+   -------------------------------------------------------------------------- */
+
+.lotes-card .table-responsive {
+  max-height: 18rem;
+  overflow-y: auto;
+}
+
+.lotes-card .table > thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+.lotes-card .card-header {
+  gap: 0.75rem;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1199.98px) {
+  .list-card {
+    --hsg-list-max-height: none;
+  }
+
+  .lotes-card .table-responsive {
+    max-height: none;
+  }
+}

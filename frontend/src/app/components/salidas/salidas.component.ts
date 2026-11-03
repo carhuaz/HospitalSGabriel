@@ -36,6 +36,7 @@ interface FiltrosSalidaForm {
   selector: 'app-salidas',
   imports: [FormField, FormRoot],
   templateUrl: './salidas.component.html',
+  styleUrl: './salidas.component.css',
 })
 export class Salidas implements OnInit {
   private readonly salidaService = inject(SalidaService);

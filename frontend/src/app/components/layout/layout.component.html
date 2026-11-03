@@ -1,12 +1,18 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container-fluid">
-    <a class="navbar-brand fw-semibold" routerLink="/dashboard"> Hospital San Gabriel </a>
+<header class="app-navbar">
+  <div class="app-navbar__inner">
+    <a class="app-brand" routerLink="/dashboard">
+      <span class="app-brand__mark" aria-hidden="true"></span>
+      <span class="app-brand__text">
+        <strong>Hospital San Gabriel</strong>
+        <small>Inventario hospitalario</small>
+      </span>
+    </a>
 
-    <div class="d-flex align-items-center gap-3 text-white">
+    <div class="app-user">
       @if (usuario(); as usuarioActual) {
-        <div class="text-end lh-sm">
-          <div class="fw-semibold">{{ usuarioActual.nombre_completo }}</div>
-          <small>{{ usuarioActual.rol }}</small>
+        <div class="app-user__info">
+          <span class="app-user__name">{{ usuarioActual.nombre_completo }}</span>
+          <span class="app-user__role">{{ usuarioActual.rol }}</span>
         </div>
       }
       <button type="button" class="btn btn-outline-light btn-sm" (click)="cerrarSesion()">
@@ -14,82 +20,40 @@
       </button>
     </div>
   </div>
-</nav>
+</header>
 
-<div class="container-fluid">
-  <div class="row min-vh-100">
-    <aside class="col-12 col-md-3 col-lg-2 bg-light border-end py-4">
-      <div class="list-group list-group-flush">
-        <a
-          class="list-group-item list-group-item-action"
-          routerLink="/dashboard"
-          routerLinkActive="active"
-        >
-          Dashboard
-        </a>
+<div class="app-body">
+  <aside class="app-sidebar">
+    <p class="app-sidebar__title">Menú</p>
 
-        @if (puedeVer(['Administrador', 'Almacén'])) {
-          <a
-            class="list-group-item list-group-item-action"
-            routerLink="/categorias"
-            routerLinkActive="active"
-          >
-            Categorías
-          </a>
-        }
+    <nav class="app-nav" aria-label="Navegación principal">
+      <a class="app-nav__link" routerLink="/dashboard" routerLinkActive="active">Dashboard</a>
 
-        <a
-          class="list-group-item list-group-item-action"
-          routerLink="/productos"
-          routerLinkActive="active"
-        >
-          Productos
-        </a>
+      @if (puedeVer(['Administrador', 'Almacén'])) {
+        <a class="app-nav__link" routerLink="/categorias" routerLinkActive="active">Categorías</a>
+      }
 
-        @if (puedeVer(['Administrador', 'Almacén'])) {
-          <a
-            class="list-group-item list-group-item-action"
-            routerLink="/entradas"
-            routerLinkActive="active"
-          >
-            Entradas
-          </a>
-        }
+      <a class="app-nav__link" routerLink="/productos" routerLinkActive="active">Productos</a>
 
-        @if (puedeVer(['Administrador', 'Farmacia'])) {
-          <a
-            class="list-group-item list-group-item-action"
-            routerLink="/salidas"
-            routerLinkActive="active"
-          >
-            Salidas
-          </a>
-        }
+      @if (puedeVer(['Administrador', 'Almacén'])) {
+        <a class="app-nav__link" routerLink="/entradas" routerLinkActive="active">Entradas</a>
+      }
 
-        <a
-          class="list-group-item list-group-item-action"
-          routerLink="/movimientos"
-          routerLinkActive="active"
-        >
-          Movimientos
-        </a>
+      @if (puedeVer(['Administrador', 'Farmacia'])) {
+        <a class="app-nav__link" routerLink="/salidas" routerLinkActive="active">Salidas</a>
+      }
 
-        <a
-          class="list-group-item list-group-item-action"
-          routerLink="/indicadores"
-          routerLinkActive="active"
-        >
-          Indicadores
-        </a>
-      </div>
-    </aside>
+      <a class="app-nav__link" routerLink="/movimientos" routerLinkActive="active">Movimientos</a>
 
-    <main class="col-12 col-md-9 col-lg-10 px-3 px-lg-4 py-4">
-      <router-outlet />
-    </main>
-  </div>
+      <a class="app-nav__link" routerLink="/indicadores" routerLinkActive="active">Indicadores</a>
+    </nav>
+  </aside>
+
+  <main class="app-main">
+    <router-outlet />
+  </main>
 </div>
 
-<footer class="border-top bg-light text-center py-3">
-  <small class="text-muted"> Sistema de Inventario Hospitalario · {{ anioActual }} </small>
+<footer class="app-footer">
+  <small>Sistema de Inventario Hospitalario · {{ anioActual }}</small>
 </footer>

@@ -1,68 +1,67 @@
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-11 col-sm-8 col-md-6 col-lg-4">
-      <div class="card shadow-sm">
-        <div class="card-body p-4">
-          <div class="text-center mb-4">
-            <h1 class="h4 mb-1">Hospital San Gabriel</h1>
-            <p class="text-muted mb-0">Sistema de Inventario Hospitalario</p>
-          </div>
+<div class="login-page">
+  <div class="login-card">
+    <div class="login-card__header">
+      <span class="login-mark" aria-hidden="true"></span>
+      <h1 class="login-card__title">Hospital San Gabriel</h1>
+      <p class="login-card__subtitle">Sistema de Inventario Hospitalario</p>
+    </div>
 
-          <form [formRoot]="loginForm">
-            <div class="mb-3">
-              <label class="form-label" for="username">Usuario</label>
-              <input
-                id="username"
-                type="text"
-                class="form-control"
-                autocomplete="username"
-                [formField]="loginForm.username"
-              />
-              @if (loginForm.username().touched() && loginForm.username().invalid()) {
-                <div class="text-danger small mt-1">El usuario es obligatorio.</div>
-              }
-            </div>
-
-            <div class="mb-3">
-              <label class="form-label" for="password">Contraseña</label>
-              <input
-                id="password"
-                type="password"
-                class="form-control"
-                autocomplete="current-password"
-                [formField]="loginForm.password"
-              />
-              @if (loginForm.password().touched() && loginForm.password().invalid()) {
-                <div class="text-danger small mt-1">La contraseña es obligatoria.</div>
-              }
-            </div>
-
-            @if (error()) {
-              <div class="alert alert-danger py-2" role="alert">{{ error() }}</div>
-            }
-
-            <button
-              type="submit"
-              class="btn btn-primary w-100"
-              [disabled]="loginForm().submitting()"
-            >
-              @if (loginForm().submitting()) {
-                <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
-              }
-              Ingresar
-            </button>
-          </form>
-
-          <hr class="my-4" />
-
-          <div class="small text-muted">
-            <p class="mb-1"><strong>Usuarios de prueba:</strong></p>
-            <p class="mb-0">admin / admin123 · Administrador</p>
-            <p class="mb-0">farmacia / farmacia123 · Farmacia</p>
-            <p class="mb-0">almacen / almacen123 · Almacén</p>
-          </div>
-        </div>
+    <form class="login-form" [formRoot]="loginForm">
+      <div class="login-field">
+        <label class="form-label" for="username">Usuario</label>
+        <input
+          id="username"
+          type="text"
+          class="form-control"
+          autocomplete="username"
+          placeholder="Ingresa tu usuario"
+          [formField]="loginForm.username"
+        />
+        @if (loginForm.username().touched() && loginForm.username().invalid()) {
+          <div class="text-danger small mt-1">El usuario es obligatorio.</div>
+        }
       </div>
+
+      <div class="login-field">
+        <label class="form-label" for="password">Contraseña</label>
+        <input
+          id="password"
+          type="password"
+          class="form-control"
+          autocomplete="current-password"
+          placeholder="Ingresa tu contraseña"
+          [formField]="loginForm.password"
+        />
+        @if (loginForm.password().touched() && loginForm.password().invalid()) {
+          <div class="text-danger small mt-1">La contraseña es obligatoria.</div>
+        }
+      </div>
+
+      @if (error()) {
+        <div class="alert alert-danger py-2" role="alert">{{ error() }}</div>
+      }
+
+      <button
+        type="submit"
+        class="btn btn-primary w-100 login-submit"
+        [disabled]="loginForm().submitting()"
+      >
+        @if (loginForm().submitting()) {
+          <span class="spinner-border spinner-border-sm me-2" aria-hidden="true"></span>
+        }
+        Ingresar
+      </button>
+    </form>
+
+    <div class="login-hint">
+      <p class="login-hint__title">Usuarios de prueba</p>
+      <ul class="login-hint__list">
+        <li><span class="login-hint__user">admin</span> / admin123 <span>Administrador</span></li>
+        <li><span class="login-hint__user">farmacia</span> / farmacia123 <span>Farmacia</span></li>
+        <li><span class="login-hint__user">almacen</span> / almacen123 <span>Almacén</span></li>
+      </ul>
     </div>
   </div>
+
+  <p class="login-footer">Acceso restringido al personal autorizado</p>
 </div>

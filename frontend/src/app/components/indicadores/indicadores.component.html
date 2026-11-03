@@ -1,7 +1,7 @@
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+<div class="page-header">
   <div>
-    <h1 class="h3 mb-1">Indicadores</h1>
-    <p class="text-muted mb-0">Alertas y métricas del inventario hospitalario.</p>
+    <h1>Indicadores</h1>
+    <p>Alertas y métricas del inventario hospitalario.</p>
   </div>
   <button
     type="button"
@@ -20,7 +20,7 @@
 @if (resumen(); as r) {
   <div class="row g-3 mb-4">
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card stat-card h-100">
         <div class="card-body">
           <p class="text-muted mb-1">Stock bajo</p>
           <p class="display-6 fw-semibold mb-0 text-warning">{{ r.total_productos_stock_bajo }}</p>
@@ -29,7 +29,7 @@
     </div>
 
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card stat-card h-100">
         <div class="card-body">
           <p class="text-muted mb-1">Vencidos</p>
           <p class="display-6 fw-semibold mb-0 text-danger">{{ r.total_productos_vencidos }}</p>
@@ -38,7 +38,7 @@
     </div>
 
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card stat-card h-100">
         <div class="card-body">
           <p class="text-muted mb-1">Próximos a vencer</p>
           <p class="display-6 fw-semibold mb-0 text-warning">
@@ -49,7 +49,7 @@
     </div>
 
     <div class="col-12 col-sm-6 col-xl-3">
-      <div class="card border-0 shadow-sm h-100">
+      <div class="card stat-card h-100">
         <div class="card-body">
           <p class="text-muted mb-1">Valor referencial</p>
           <p class="fs-3 fw-semibold mb-0">
@@ -63,7 +63,7 @@
 
 <div class="row g-4">
   <div class="col-12 col-xl-6">
-    <div class="card shadow-sm h-100">
+    <div class="card shadow-sm list-card">
       <div class="card-header bg-white fw-semibold">Productos con stock bajo</div>
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -100,7 +100,7 @@
   </div>
 
   <div class="col-12 col-xl-6">
-    <div class="card shadow-sm h-100">
+    <div class="card shadow-sm list-card">
       <div class="card-header bg-white fw-semibold">Vencimientos</div>
       <div class="card-body border-bottom">
         <form class="row g-2 align-items-end" [formRoot]="vencimientosForm">
@@ -147,8 +147,8 @@
                   <div class="fw-semibold">{{ producto.nombre }}</div>
                   <small class="text-muted">{{ producto.cantidad_afectada }} unidades</small>
                 </td>
-                <td>{{ producto.numero_lote ?? '—' }}</td>
-                <td>{{ producto.fecha_vencimiento }}</td>
+                <td class="text-nowrap">{{ producto.numero_lote ?? '—' }}</td>
+                <td class="text-nowrap">{{ producto.fecha_vencimiento }}</td>
                 <td>
                   <span class="badge" [class]="badgeVencimiento(producto.estado_vencimiento)">
                     {{ producto.estado_vencimiento }}
@@ -169,7 +169,7 @@
   </div>
 
   <div class="col-12">
-    <div class="card shadow-sm">
+    <div class="card shadow-sm list-card">
       <div class="card-header bg-white fw-semibold">Productos con mayores salidas</div>
       <div class="card-body border-bottom">
         <form class="row g-2 align-items-end" [formRoot]="mayoresForm">

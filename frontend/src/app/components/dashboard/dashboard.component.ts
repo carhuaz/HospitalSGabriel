@@ -13,6 +13,7 @@ import { ProductoService } from '../../services/producto.service';
   selector: 'app-dashboard',
   imports: [DecimalPipe],
   templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css',
 })
 export class Dashboard implements OnInit {
   private readonly indicadorService = inject(IndicadorService);

@@ -46,6 +46,7 @@ interface FiltrosProductoForm {
   selector: 'app-productos',
   imports: [DecimalPipe, FormField, FormRoot],
   templateUrl: './productos.component.html',
+  styleUrl: './productos.component.css',
 })
 export class Productos implements OnInit {
   private readonly productoService = inject(ProductoService);

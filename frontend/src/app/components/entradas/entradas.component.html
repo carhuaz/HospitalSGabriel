@@ -1,7 +1,7 @@
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+<div class="page-header">
   <div>
-    <h1 class="h3 mb-1">Entradas</h1>
-    <p class="text-muted mb-0">Registra compras, donaciones y devoluciones de inventario.</p>
+    <h1>Entradas</h1>
+    <p>Registra compras, donaciones y devoluciones de inventario.</p>
   </div>
   <button type="button" class="btn btn-outline-primary" (click)="cargar()" [disabled]="cargando()">
     Actualizar
@@ -18,7 +18,7 @@
 
 <div class="row g-4">
   <div class="col-12 col-xl-5">
-    <div class="card shadow-sm">
+    <div class="card shadow-sm sticky-card">
       <div class="card-header bg-white fw-semibold">Registrar entrada</div>
       <div class="card-body">
         <form [formRoot]="entradaForm">
@@ -102,10 +102,10 @@
   </div>
 
   <div class="col-12 col-xl-7">
-    <div class="card shadow-sm mb-4">
+    <div class="card shadow-sm mb-4 filters-card">
       <div class="card-body">
         <form class="row g-3 align-items-end" [formRoot]="filtrosForm">
-          <div class="col-12 col-md-5">
+          <div class="col-12 col-md-6">
             <label class="form-label" for="filtroProductoEntrada">Producto</label>
             <select
               id="filtroProductoEntrada"
@@ -121,7 +121,7 @@
             </select>
           </div>
 
-          <div class="col-12 col-md-3">
+          <div class="col-6 col-md-3">
             <label class="form-label" for="fechaInicioEntrada">Desde</label>
             <input
               id="fechaInicioEntrada"
@@ -131,7 +131,7 @@
             />
           </div>
 
-          <div class="col-12 col-md-3">
+          <div class="col-6 col-md-3">
             <label class="form-label" for="fechaFinEntrada">Hasta</label>
             <input
               id="fechaFinEntrada"
@@ -141,14 +141,14 @@
             />
           </div>
 
-          <div class="col-12 col-md-1 d-grid">
+          <div class="col-12 d-flex justify-content-end">
             <button type="submit" class="btn btn-primary">Filtrar</button>
           </div>
         </form>
       </div>
     </div>
 
-    <div class="card shadow-sm">
+    <div class="card shadow-sm list-card">
       <div class="card-header bg-white fw-semibold">Entradas registradas</div>
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">

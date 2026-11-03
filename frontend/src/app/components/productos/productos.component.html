@@ -1,7 +1,7 @@
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+<div class="page-header">
   <div>
-    <h1 class="h3 mb-1">Productos</h1>
-    <p class="text-muted mb-0">Catálogo de medicamentos, insumos y material hospitalario.</p>
+    <h1>Productos</h1>
+    <p>Catálogo de medicamentos, insumos y material hospitalario.</p>
   </div>
   <button type="button" class="btn btn-outline-primary" (click)="cargar()" [disabled]="cargando()">
     Actualizar
@@ -16,7 +16,7 @@
   <div class="alert alert-success" role="alert">{{ mensaje() }}</div>
 }
 
-<div class="card shadow-sm mb-4">
+<div class="card shadow-sm mb-4 filters-card">
   <div class="card-body">
     <form class="row g-3 align-items-end" [formRoot]="filtrosForm">
       <div class="col-12 col-md-4">
@@ -61,7 +61,7 @@
 
 <div class="row g-4">
   <div class="col-12 col-xl-7">
-    <div class="card shadow-sm">
+    <div class="card shadow-sm list-card">
       <div class="card-header bg-white fw-semibold">Listado de productos</div>
       <div class="table-responsive">
         <table class="table table-hover align-middle mb-0">
@@ -69,7 +69,6 @@
             <tr>
               <th>Código</th>
               <th>Producto</th>
-              <th>Categoría</th>
               <th class="text-end">Precio</th>
               <th class="text-end">Stock</th>
               <th>Estado</th>
@@ -82,9 +81,10 @@
                 <td class="fw-semibold">{{ producto.codigo }}</td>
                 <td>
                   <div class="fw-semibold">{{ producto.nombre }}</div>
-                  <small class="text-muted">{{ producto.unidad_medida }}</small>
+                  <small class="text-muted">
+                    {{ producto.nombre_categoria }} · {{ producto.unidad_medida }}
+                  </small>
                 </td>
-                <td>{{ producto.nombre_categoria }}</td>
                 <td class="text-end">
                   S/ {{ numero(producto.precio_unitario) | number: '1.2-2' }}
                 </td>
@@ -103,17 +103,17 @@
                   </span>
                 </td>
                 <td class="text-end">
-                  <div class="btn-group btn-group-sm">
+                  <div class="d-flex flex-wrap justify-content-end gap-1">
                     <button
                       type="button"
-                      class="btn btn-outline-primary"
+                      class="btn btn-sm btn-outline-primary"
                       (click)="editar(producto)"
                     >
                       Editar
                     </button>
                     <button
                       type="button"
-                      class="btn btn-outline-secondary"
+                      class="btn btn-sm btn-outline-secondary"
                       (click)="verLotes(producto)"
                     >
                       Lotes
@@ -121,7 +121,7 @@
                     @if (producto.activo) {
                       <button
                         type="button"
-                        class="btn btn-outline-danger"
+                        class="btn btn-sm btn-outline-danger"
                         (click)="desactivar(producto)"
                       >
                         Desactivar
@@ -132,7 +132,7 @@
               </tr>
             } @empty {
               <tr>
-                <td colspan="7" class="text-center text-muted py-4">
+                <td colspan="6" class="text-center text-muted py-4">
                   No hay productos que coincidan con el filtro.
                 </td>
               </tr>
@@ -143,7 +143,7 @@
     </div>
 
     @if (productoLotesNombre()) {
-      <div class="card shadow-sm mt-4">
+      <div class="card shadow-sm mt-4 lotes-card">
         <div class="card-header bg-white d-flex justify-content-between align-items-center">
           <span class="fw-semibold">Lotes de {{ productoLotesNombre() }}</span>
           <button type="button" class="btn btn-sm btn-outline-secondary" (click)="cerrarLotes()">
@@ -201,7 +201,7 @@
   </div>
 
   <div class="col-12 col-xl-5">
-    <div class="card shadow-sm">
+    <div class="card shadow-sm sticky-card">
       <div class="card-header bg-white fw-semibold">
         {{ editando() ? 'Editar producto' : 'Nuevo producto' }}
       </div>
@@ -228,7 +228,7 @@
                 class="form-select"
                 [formField]="productoForm.id_categoria"
               >
-                <option [value]="0">Seleccione una categoría</option>
+                <option [value]="0">Seleccione categoría</option>
                 @for (categoria of categorias(); track categoria.id_categoria) {
                   <option [value]="categoria.id_categoria">{{ categoria.nombre }}</option>
                 }

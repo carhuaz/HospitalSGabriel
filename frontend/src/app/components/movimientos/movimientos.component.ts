@@ -20,6 +20,7 @@ interface FiltrosMovimientoForm {
   selector: 'app-movimientos',
   imports: [FormField, FormRoot],
   templateUrl: './movimientos.component.html',
+  styleUrl: './movimientos.component.css',
 })
 export class Movimientos implements OnInit {
   private readonly movimientoService = inject(MovimientoService);

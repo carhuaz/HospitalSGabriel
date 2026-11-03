@@ -16,6 +16,7 @@ interface CategoriaForm {
   selector: 'app-categorias',
   imports: [FormField, FormRoot],
   templateUrl: './categorias.component.html',
+  styleUrl: './categorias.component.css',
 })
 export class Categorias implements OnInit {
   private readonly categoriaService = inject(CategoriaService);

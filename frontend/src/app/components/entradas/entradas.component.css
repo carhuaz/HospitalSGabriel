@@ -1,0 +1,82 @@
+:host {
+  display: block;
+}
+
+.list-card {
+  --hsg-list-max-height: 34rem;
+}
+
+/* Tabla densa: seis columnas en una tarjeta de 7/12 */
+.list-card .table > thead th,
+.list-card .table > tbody > tr > td {
+  padding: 0.6rem 0.45rem;
+}
+
+/* Fecha del registro, dato secundario de la fila */
+.list-card .table td:first-child {
+  font-size: 0.76rem;
+  color: var(--hsg-muted);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.list-card .table td small {
+  display: block;
+  font-size: 0.74rem;
+}
+
+/* Lote y su vencimiento: identificadores que no deben partirse */
+.list-card .table td:nth-child(3) {
+  white-space: nowrap;
+}
+
+.list-card .table td:nth-child(3) div {
+  font-size: 0.78rem;
+}
+
+.list-card .table td:nth-child(3) small {
+  font-size: 0.66rem;
+}
+
+/* Cantidad y stock: números que no deben partirse */
+.list-card .table td:nth-child(4),
+.list-card .table td:last-child {
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Columna de stock: "anterior → posterior" */
+.list-card .table td:last-child {
+  font-size: 0.8rem;
+  color: var(--hsg-muted);
+}
+
+@media (max-width: 1399.98px) {
+  /* Portátiles: tabla algo más compacta para que no haya scroll horizontal */
+  .list-card .table > thead th,
+  .list-card .table > tbody > tr > td {
+    padding: 0.55rem 0.35rem;
+  }
+
+  .list-card .table td:first-child {
+    font-size: 0.72rem;
+  }
+
+  .list-card .table td:nth-child(3) div {
+    font-size: 0.74rem;
+  }
+
+  .list-card .table td:nth-child(3) small {
+    font-size: 0.62rem;
+  }
+
+  .list-card .table td:last-child {
+    font-size: 0.76rem;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .list-card {
+    --hsg-list-max-height: none;
+  }
+}

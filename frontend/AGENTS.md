@@ -103,13 +103,14 @@ componente.html → componente.ts → service → API backend
 
 ## Estado actual
 
-Estructura completa y funcional **sin CSS todavía**:
+Estructura completa, funcional y con estilos:
 
 - Rutas lazy con `authGuard`: `/login`, `/dashboard`, `/categorias`, `/productos`, `/entradas`, `/salidas`, `/movimientos`, `/indicadores`.
 - `AuthService` guarda el usuario en `localStorage` bajo la clave `hospital-sg-usuario` (el backend no emite token).
-- Todos los componentes tienen `.ts` + `.html`; ninguno declara `styleUrl` salvo `App`.
+- Todos los componentes son standalone, con `.ts` + `.html` + `.css` y `styleUrl` declarado (incluido `App`).
+- `src/styles.css` concentra los tokens de marca (`--hsg-*`), los overrides de Bootstrap 5.3 y los patrones compartidos: `.page-header`, `.stat-card`, `.list-card`, `.sticky-card`, `.filters-card`, tablas, botones, formularios y alertas.
+- Cada `.component.css` solo contiene ajustes propios de su pantalla (densidad de tablas, columnas que no deben partirse, alturas de scroll interno).
 - `npm run build` y `npm test` pasan.
-- Pendiente: estilos por componente (`.component.css`), `styleUrl` en cada componente y ajustes finos en `src/styles.css`.
 
 ## Convenciones del backend reflejadas en el frontend
 

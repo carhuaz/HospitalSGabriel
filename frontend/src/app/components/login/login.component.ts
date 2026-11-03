@@ -11,6 +11,7 @@ import { AuthService } from '../../services/auth.service';
   selector: 'app-login',
   imports: [FormField, FormRoot],
   templateUrl: './login.component.html',
+  styleUrl: './login.component.css',
 })
 export class Login {
   private readonly authService = inject(AuthService);

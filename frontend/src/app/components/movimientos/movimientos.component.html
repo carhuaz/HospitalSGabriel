@@ -1,7 +1,7 @@
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+<div class="page-header">
   <div>
-    <h1 class="h3 mb-1">Movimientos</h1>
-    <p class="text-muted mb-0">Historial de entradas y salidas del inventario.</p>
+    <h1>Movimientos</h1>
+    <p>Historial de entradas y salidas del inventario.</p>
   </div>
   <button type="button" class="btn btn-outline-primary" (click)="cargar()" [disabled]="cargando()">
     Actualizar
@@ -12,7 +12,7 @@
   <div class="alert alert-danger" role="alert">{{ error() }}</div>
 }
 
-<div class="card shadow-sm mb-4">
+<div class="card shadow-sm mb-4 filters-card">
   <div class="card-body">
     <form class="row g-3 align-items-end" [formRoot]="filtrosForm">
       <div class="col-12 col-md-3">
@@ -77,7 +77,7 @@
   </div>
 </div>
 
-<div class="card shadow-sm">
+<div class="card shadow-sm list-card">
   <div class="card-header bg-white fw-semibold">Historial de movimientos</div>
   <div class="table-responsive">
     <table class="table table-hover align-middle mb-0">

@@ -24,6 +24,7 @@ interface MayoresSalidasForm {
   selector: 'app-indicadores',
   imports: [DecimalPipe, FormField, FormRoot],
   templateUrl: './indicadores.component.html',
+  styleUrl: './indicadores.component.css',
 })
 export class Indicadores implements OnInit {
   private readonly indicadorService = inject(IndicadorService);

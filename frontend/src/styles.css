@@ -1,1 +1,497 @@
-/* You can add global styles to this file, and also import other style files */
+/* ==========================================================================
+   Hospital San Gabriel — estilos globales
+   Bootstrap 5 se carga por CDN; aquí viven los tokens de marca, los overrides
+   de componentes de Bootstrap y los patrones compartidos por varias pantallas.
+   ========================================================================== */
+
+:root {
+  /* Paleta de marca */
+  --hsg-primary: #0f5c73;
+  --hsg-primary-dark: #0a4556;
+  --hsg-primary-darker: #073542;
+  --hsg-primary-soft: rgba(15, 92, 115, 0.08);
+  --hsg-accent: #12a594;
+  --hsg-ink: #16272f;
+  --hsg-muted: #667d8a;
+  --hsg-border: #dfe7ec;
+  --hsg-border-soft: #edf2f5;
+  --hsg-surface: #ffffff;
+  --hsg-canvas: #f3f7f9;
+  --hsg-radius-sm: 0.55rem;
+  --hsg-radius: 0.9rem;
+  --hsg-shadow-sm: 0 1px 2px rgba(12, 42, 54, 0.05), 0 10px 24px -20px rgba(12, 42, 54, 0.45);
+  --hsg-shadow-md: 0 18px 40px -26px rgba(12, 42, 54, 0.55);
+  --hsg-transition: 160ms ease;
+}
+
+/* Tokens de Bootstrap 5.3: se declaran en html:root para ganar a los del CDN
+   sin depender del orden de carga de las hojas de estilo. */
+html:root {
+  --bs-primary: #0f5c73;
+  --bs-primary-rgb: 15, 92, 115;
+  --bs-link-color: #0f5c73;
+  --bs-link-color-rgb: 15, 92, 115;
+  --bs-link-hover-color: #0a4556;
+  --bs-link-hover-color-rgb: 10, 69, 86;
+  --bs-body-color: #16272f;
+  --bs-body-color-rgb: 22, 39, 47;
+  --bs-body-bg: #f3f7f9;
+  --bs-border-color: #dfe7ec;
+  --bs-border-radius: 0.55rem;
+  --bs-border-radius-sm: 0.45rem;
+  --bs-border-radius-lg: 0.9rem;
+  --bs-secondary-bg: #f3f7f9;
+  --bs-tertiary-bg: #eaf1f4;
+  --bs-focus-ring-color: rgba(15, 92, 115, 0.2);
+}
+
+/* --------------------------------------------------------------------------
+   Base
+   -------------------------------------------------------------------------- */
+
+html {
+  height: 100%;
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  font-family:
+    'Segoe UI',
+    system-ui,
+    -apple-system,
+    'Helvetica Neue',
+    Arial,
+    sans-serif;
+  color: var(--hsg-ink);
+  background-color: var(--hsg-canvas);
+  background-image:
+    radial-gradient(1200px 480px at 110% -10%, rgba(15, 92, 115, 0.07), transparent 62%),
+    radial-gradient(900px 420px at -20% 110%, rgba(18, 165, 148, 0.06), transparent 60%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  color: #10262f;
+  font-weight: 650;
+  letter-spacing: -0.015em;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+:focus-visible {
+  outline: 2px solid rgba(15, 92, 115, 0.55);
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   Encabezado de página (compartido por todas las vistas de datos)
+   -------------------------------------------------------------------------- */
+
+.page-header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.85rem 1rem;
+  margin-bottom: 1.15rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--hsg-border);
+}
+
+.page-header h1 {
+  margin: 0 0 0.2rem;
+  font-size: clamp(1.35rem, 2vw, 1.6rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.page-header p {
+  margin: 0;
+  color: var(--hsg-muted);
+  font-size: 0.9rem;
+}
+
+.page-header > .btn,
+.page-header > .page-header__actions {
+  flex: 0 0 auto;
+}
+
+/* --------------------------------------------------------------------------
+   Tarjetas
+   -------------------------------------------------------------------------- */
+
+.card {
+  --bs-card-border-color: var(--hsg-border);
+  --bs-card-border-radius: var(--hsg-radius);
+  --bs-card-inner-border-radius: calc(var(--hsg-radius) - 1px);
+  --bs-card-cap-bg: transparent;
+  --bs-card-cap-padding-y: 0.85rem;
+  --bs-card-cap-padding-x: 1.15rem;
+  --bs-card-spacer-x: 1.15rem;
+  --bs-card-spacer-y: 1.05rem;
+  box-shadow: var(--hsg-shadow-sm);
+}
+
+/* Bootstrap aplica .shadow-sm con !important; se reemplaza por la sombra de marca. */
+.card.shadow-sm {
+  box-shadow: var(--hsg-shadow-sm) !important;
+}
+
+.card-header {
+  font-weight: 600;
+  color: #2b4552;
+}
+
+.card-header:first-child {
+  border-bottom: 1px solid var(--hsg-border);
+}
+
+/* KPI / tarjetas de indicadores */
+.stat-card {
+  position: relative;
+  overflow: hidden;
+  transition:
+    transform var(--hsg-transition),
+    box-shadow var(--hsg-transition);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--hsg-primary), var(--hsg-accent));
+}
+
+.stat-card .card-body {
+  padding-left: 1.4rem;
+}
+
+.stat-card p:first-of-type {
+  margin-bottom: 0.3rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--hsg-muted);
+}
+
+.stat-card .display-6 {
+  font-size: clamp(1.55rem, 2.4vw, 2.05rem);
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--hsg-shadow-md) !important;
+}
+
+/* Columna de formulario que acompaña a un listado */
+.sticky-card {
+  position: sticky;
+  top: 5.5rem;
+}
+
+.sticky-card .card-body {
+  padding-bottom: 1.4rem;
+}
+
+/* Barra de filtros compacta sobre un listado */
+.filters-card .card-body {
+  padding-block: 1rem;
+}
+
+/* --------------------------------------------------------------------------
+   Tablas
+   -------------------------------------------------------------------------- */
+
+.table {
+  --bs-table-border-color: var(--hsg-border-soft);
+  --bs-table-color: var(--hsg-ink);
+  margin-bottom: 0;
+}
+
+.table > thead th {
+  --bs-table-bg: #eff5f8;
+  --bs-table-color: #465f6d;
+  padding: 0.7rem 0.9rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  border-bottom: 1px solid var(--hsg-border);
+}
+
+.table > tbody > tr > td {
+  padding: 0.75rem 0.9rem;
+  vertical-align: middle;
+}
+
+.table-hover {
+  --bs-table-hover-bg: rgba(15, 92, 115, 0.055);
+}
+
+.table .text-end {
+  font-variant-numeric: tabular-nums;
+}
+
+.table tbody td.text-center.text-muted {
+  padding-block: 1.75rem;
+  font-style: italic;
+}
+
+.table-responsive {
+  scrollbar-width: thin;
+}
+
+/* Listados dentro de una tarjeta: cabecera fija y scroll interno.
+   Cada componente puede ajustar la altura con --hsg-list-max-height. */
+.list-card {
+  --hsg-list-max-height: 28rem;
+}
+
+.list-card .table-responsive {
+  max-height: var(--hsg-list-max-height);
+  overflow-y: auto;
+}
+
+.list-card .table > thead th {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+/* --------------------------------------------------------------------------
+   Insignias de estado
+   -------------------------------------------------------------------------- */
+
+.badge {
+  padding: 0.42em 0.7em;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  border-radius: 999px;
+}
+
+/* --------------------------------------------------------------------------
+   Botones
+   -------------------------------------------------------------------------- */
+
+.btn {
+  --bs-btn-border-radius: var(--hsg-radius-sm);
+  --bs-btn-font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.btn.btn-primary {
+  --bs-btn-bg: var(--hsg-primary);
+  --bs-btn-border-color: var(--hsg-primary);
+  --bs-btn-hover-bg: var(--hsg-primary-dark);
+  --bs-btn-hover-border-color: var(--hsg-primary-dark);
+  --bs-btn-active-bg: var(--hsg-primary-darker);
+  --bs-btn-active-border-color: var(--hsg-primary-darker);
+  --bs-btn-disabled-bg: var(--hsg-primary);
+  --bs-btn-disabled-border-color: var(--hsg-primary);
+  --bs-btn-focus-shadow-rgb: 15, 92, 115;
+  box-shadow: 0 10px 18px -14px rgba(15, 92, 115, 0.9);
+}
+
+.btn.btn-outline-primary {
+  --bs-btn-color: var(--hsg-primary);
+  --bs-btn-border-color: rgba(15, 92, 115, 0.45);
+  --bs-btn-hover-bg: var(--hsg-primary);
+  --bs-btn-hover-border-color: var(--hsg-primary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--hsg-primary-dark);
+  --bs-btn-active-border-color: var(--hsg-primary-dark);
+  --bs-btn-focus-shadow-rgb: 15, 92, 115;
+}
+
+.btn.btn-outline-secondary {
+  --bs-btn-color: #526975;
+  --bs-btn-border-color: #cdd9e0;
+  --bs-btn-hover-bg: #eef3f5;
+  --bs-btn-hover-border-color: #c4d2da;
+  --bs-btn-hover-color: #384e5a;
+  --bs-btn-active-bg: #e4ebee;
+  --bs-btn-active-border-color: #c4d2da;
+}
+
+.btn-group > .btn {
+  white-space: nowrap;
+}
+
+/* --------------------------------------------------------------------------
+   Formularios
+   -------------------------------------------------------------------------- */
+
+.form-label {
+  margin-bottom: 0.35rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+  color: #3c5361;
+}
+
+.form-control,
+.form-select {
+  border-color: #cfdbe1;
+  border-radius: var(--hsg-radius-sm);
+  padding: 0.5rem 0.75rem;
+  color: var(--hsg-ink);
+  transition:
+    border-color var(--hsg-transition),
+    box-shadow var(--hsg-transition);
+}
+
+.form-select {
+  padding-right: 2.25rem;
+}
+
+.form-control::placeholder {
+  color: #9aabb5;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: rgba(15, 92, 115, 0.6);
+  box-shadow: 0 0 0 0.2rem rgba(15, 92, 115, 0.15);
+}
+
+.form-check-input {
+  border-color: #c3d1d9;
+}
+
+.form-check-input:checked {
+  background-color: var(--hsg-primary);
+  border-color: var(--hsg-primary);
+}
+
+.form-check-input:focus {
+  border-color: rgba(15, 92, 115, 0.6);
+  box-shadow: 0 0 0 0.2rem rgba(15, 92, 115, 0.15);
+}
+
+.form-check-label {
+  color: #3c5361;
+}
+
+/* Mensajes de validación de Signal Forms */
+.text-danger.small {
+  font-weight: 500;
+}
+
+/* --------------------------------------------------------------------------
+   Alertas
+   -------------------------------------------------------------------------- */
+
+.alert {
+  border-radius: 0.7rem;
+  font-size: 0.92rem;
+  border-width: 1px;
+}
+
+.alert-danger {
+  color: #8f2323;
+  background-color: #fdf0f0;
+  border-color: #f3c9c9;
+}
+
+.alert-success {
+  color: #1c6b47;
+  background-color: #eefaf3;
+  border-color: #c3e8d5;
+}
+
+/* --------------------------------------------------------------------------
+   Scrollbars
+   -------------------------------------------------------------------------- */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c3d3da transparent;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c3d3da;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: #a8bcc5;
+  background-clip: padding-box;
+  border: 3px solid transparent;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+}
+
+/* --------------------------------------------------------------------------
+   Responsive
+   -------------------------------------------------------------------------- */
+
+@media (max-width: 1399.98px) {
+  /* Portátiles: se gana ancho para las tablas reduciendo el aire de las celdas */
+  .table > thead th {
+    padding: 0.65rem 0.7rem;
+  }
+
+  .table > tbody > tr > td {
+    padding: 0.7rem 0.7rem;
+  }
+}
+
+@media (max-width: 1199.98px) {
+  .sticky-card {
+    position: static;
+  }
+}
+
+@media (max-width: 575.98px) {
+  .page-header {
+    padding-bottom: 0.85rem;
+  }
+
+  .table {
+    font-size: 0.86rem;
+  }
+
+  /* En pantallas pequeñas las tablas anchas se desplazan en horizontal
+     en lugar de comprimir sus columnas hasta romper los textos. */
+  .list-card .table {
+    min-width: 32rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .stat-card,
+  .stat-card:hover {
+    transition: none;
+    transform: none;
+  }
+}
