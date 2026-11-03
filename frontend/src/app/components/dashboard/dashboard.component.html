@@ -1,0 +1,171 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h1 class="h3 mb-1">Dashboard</h1>
+    <p class="text-muted mb-0">Resumen actual del inventario hospitalario.</p>
+  </div>
+  <button type="button" class="btn btn-outline-primary" (click)="cargar()" [disabled]="cargando()">
+    Actualizar
+  </button>
+</div>
+
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
+
+@if (cargando()) {
+  <div class="d-flex align-items-center gap-2 text-muted mb-3">
+    <span class="spinner-border spinner-border-sm" aria-hidden="true"></span>
+    <span>Cargando indicadores...</span>
+  </div>
+}
+
+@if (resumen(); as r) {
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Productos activos</p>
+          <p class="display-6 fw-semibold mb-0">{{ r.total_productos_activos }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Categorías activas</p>
+          <p class="display-6 fw-semibold mb-0">{{ r.total_categorias_activas }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Stock bajo</p>
+          <p class="display-6 fw-semibold mb-0 text-warning">{{ r.total_productos_stock_bajo }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Productos vencidos</p>
+          <p class="display-6 fw-semibold mb-0 text-danger">{{ r.total_productos_vencidos }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Próximos a vencer</p>
+          <p class="display-6 fw-semibold mb-0 text-warning">
+            {{ r.total_productos_proximos_vencer }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Movimientos de hoy</p>
+          <p class="display-6 fw-semibold mb-0">{{ r.total_movimientos_hoy }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-xl-6">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Valor referencial del inventario</p>
+          <p class="display-6 fw-semibold mb-0">
+            S/ {{ numero(r.valor_referencial_inventario) | number: '1.2-2' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<div class="row g-4">
+  <div class="col-12 col-xl-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold">Productos con stock bajo</div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Código</th>
+              <th>Producto</th>
+              <th class="text-end">Stock</th>
+              <th class="text-end">Mínimo</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (producto of stockBajo(); track producto.id_producto) {
+              <tr>
+                <td>{{ producto.codigo }}</td>
+                <td>
+                  <div class="fw-semibold">{{ producto.nombre }}</div>
+                  <small class="text-muted">{{ producto.nombre_categoria }}</small>
+                </td>
+                <td class="text-end text-danger fw-semibold">{{ producto.stock_actual }}</td>
+                <td class="text-end">{{ producto.stock_minimo }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                  No hay productos con stock bajo.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold">Próximos vencimientos</div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Producto</th>
+              <th>Lote</th>
+              <th>Vence</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (producto of vencimientos(); track producto.id_lote ?? producto.id_producto) {
+              <tr>
+                <td>
+                  <div class="fw-semibold">{{ producto.nombre }}</div>
+                  <small class="text-muted">{{ producto.codigo }}</small>
+                </td>
+                <td>{{ producto.numero_lote ?? '—' }}</td>
+                <td>{{ producto.fecha_vencimiento }}</td>
+                <td>
+                  <span class="badge" [class]="badgeVencimiento(producto.estado_vencimiento)">
+                    {{ producto.estado_vencimiento }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                  No hay vencimientos en los próximos 30 días.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,95 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+  <div class="container-fluid">
+    <a class="navbar-brand fw-semibold" routerLink="/dashboard"> Hospital San Gabriel </a>
+
+    <div class="d-flex align-items-center gap-3 text-white">
+      @if (usuario(); as usuarioActual) {
+        <div class="text-end lh-sm">
+          <div class="fw-semibold">{{ usuarioActual.nombre_completo }}</div>
+          <small>{{ usuarioActual.rol }}</small>
+        </div>
+      }
+      <button type="button" class="btn btn-outline-light btn-sm" (click)="cerrarSesion()">
+        Cerrar sesión
+      </button>
+    </div>
+  </div>
+</nav>
+
+<div class="container-fluid">
+  <div class="row min-vh-100">
+    <aside class="col-12 col-md-3 col-lg-2 bg-light border-end py-4">
+      <div class="list-group list-group-flush">
+        <a
+          class="list-group-item list-group-item-action"
+          routerLink="/dashboard"
+          routerLinkActive="active"
+        >
+          Dashboard
+        </a>
+
+        @if (puedeVer(['Administrador', 'Almacén'])) {
+          <a
+            class="list-group-item list-group-item-action"
+            routerLink="/categorias"
+            routerLinkActive="active"
+          >
+            Categorías
+          </a>
+        }
+
+        <a
+          class="list-group-item list-group-item-action"
+          routerLink="/productos"
+          routerLinkActive="active"
+        >
+          Productos
+        </a>
+
+        @if (puedeVer(['Administrador', 'Almacén'])) {
+          <a
+            class="list-group-item list-group-item-action"
+            routerLink="/entradas"
+            routerLinkActive="active"
+          >
+            Entradas
+          </a>
+        }
+
+        @if (puedeVer(['Administrador', 'Farmacia'])) {
+          <a
+            class="list-group-item list-group-item-action"
+            routerLink="/salidas"
+            routerLinkActive="active"
+          >
+            Salidas
+          </a>
+        }
+
+        <a
+          class="list-group-item list-group-item-action"
+          routerLink="/movimientos"
+          routerLinkActive="active"
+        >
+          Movimientos
+        </a>
+
+        <a
+          class="list-group-item list-group-item-action"
+          routerLink="/indicadores"
+          routerLinkActive="active"
+        >
+          Indicadores
+        </a>
+      </div>
+    </aside>
+
+    <main class="col-12 col-md-9 col-lg-10 px-3 px-lg-4 py-4">
+      <router-outlet />
+    </main>
+  </div>
+</div>
+
+<footer class="border-top bg-light text-center py-3">
+  <small class="text-muted"> Sistema de Inventario Hospitalario · {{ anioActual }} </small>
+</footer>

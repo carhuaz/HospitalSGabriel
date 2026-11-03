@@ -1,0 +1,345 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h1 class="h3 mb-1">Productos</h1>
+    <p class="text-muted mb-0">Catálogo de medicamentos, insumos y material hospitalario.</p>
+  </div>
+  <button type="button" class="btn btn-outline-primary" (click)="cargar()" [disabled]="cargando()">
+    Actualizar
+  </button>
+</div>
+
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
+
+@if (mensaje()) {
+  <div class="alert alert-success" role="alert">{{ mensaje() }}</div>
+}
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <form class="row g-3 align-items-end" [formRoot]="filtrosForm">
+      <div class="col-12 col-md-4">
+        <label class="form-label" for="busquedaProducto">Buscar</label>
+        <input
+          id="busquedaProducto"
+          type="search"
+          class="form-control"
+          placeholder="Código o nombre"
+          [formField]="filtrosForm.busqueda"
+        />
+      </div>
+
+      <div class="col-12 col-md-3">
+        <label class="form-label" for="filtroCategoria">Categoría</label>
+        <select id="filtroCategoria" class="form-select" [formField]="filtrosForm.id_categoria">
+          <option [value]="0">Todas</option>
+          @for (categoria of categorias(); track categoria.id_categoria) {
+            <option [value]="categoria.id_categoria">{{ categoria.nombre }}</option>
+          }
+        </select>
+      </div>
+
+      <div class="col-12 col-md-3">
+        <div class="form-check mb-2">
+          <input
+            id="soloActivos"
+            type="checkbox"
+            class="form-check-input"
+            [formField]="filtrosForm.solo_activos"
+          />
+          <label class="form-check-label" for="soloActivos">Solo activos</label>
+        </div>
+      </div>
+
+      <div class="col-12 col-md-2 d-grid">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-12 col-xl-7">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold">Listado de productos</div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Código</th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th class="text-end">Precio</th>
+              <th class="text-end">Stock</th>
+              <th>Estado</th>
+              <th class="text-end">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (producto of productos(); track producto.id_producto) {
+              <tr>
+                <td class="fw-semibold">{{ producto.codigo }}</td>
+                <td>
+                  <div class="fw-semibold">{{ producto.nombre }}</div>
+                  <small class="text-muted">{{ producto.unidad_medida }}</small>
+                </td>
+                <td>{{ producto.nombre_categoria }}</td>
+                <td class="text-end">
+                  S/ {{ numero(producto.precio_unitario) | number: '1.2-2' }}
+                </td>
+                <td class="text-end">
+                  <span class="badge" [class]="badgeStock(producto)">
+                    {{ producto.stock_actual }}
+                  </span>
+                  <small class="text-muted d-block">mín. {{ producto.stock_minimo }}</small>
+                </td>
+                <td>
+                  <span
+                    class="badge"
+                    [class]="producto.activo ? 'text-bg-success' : 'text-bg-secondary'"
+                  >
+                    {{ producto.activo ? 'Activo' : 'Inactivo' }}
+                  </span>
+                </td>
+                <td class="text-end">
+                  <div class="btn-group btn-group-sm">
+                    <button
+                      type="button"
+                      class="btn btn-outline-primary"
+                      (click)="editar(producto)"
+                    >
+                      Editar
+                    </button>
+                    <button
+                      type="button"
+                      class="btn btn-outline-secondary"
+                      (click)="verLotes(producto)"
+                    >
+                      Lotes
+                    </button>
+                    @if (producto.activo) {
+                      <button
+                        type="button"
+                        class="btn btn-outline-danger"
+                        (click)="desactivar(producto)"
+                      >
+                        Desactivar
+                      </button>
+                    }
+                  </div>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="7" class="text-center text-muted py-4">
+                  No hay productos que coincidan con el filtro.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    @if (productoLotesNombre()) {
+      <div class="card shadow-sm mt-4">
+        <div class="card-header bg-white d-flex justify-content-between align-items-center">
+          <span class="fw-semibold">Lotes de {{ productoLotesNombre() }}</span>
+          <button type="button" class="btn btn-sm btn-outline-secondary" (click)="cerrarLotes()">
+            Cerrar
+          </button>
+        </div>
+
+        @if (cargandoLotes()) {
+          <div class="card-body text-muted">Cargando lotes...</div>
+        } @else {
+          <div class="table-responsive">
+            <table class="table table-sm table-hover align-middle mb-0">
+              <thead class="table-light">
+                <tr>
+                  <th>Lote</th>
+                  <th>Vencimiento</th>
+                  <th class="text-end">Inicial</th>
+                  <th class="text-end">Disponible</th>
+                  <th>Estado</th>
+                </tr>
+              </thead>
+              <tbody>
+                @for (lote of lotesProducto(); track lote.id_lote) {
+                  <tr>
+                    <td>{{ lote.numero_lote }}</td>
+                    <td>{{ fechaCorta(lote.fecha_vencimiento) }}</td>
+                    <td class="text-end">{{ lote.cantidad_inicial }}</td>
+                    <td class="text-end">{{ lote.stock_disponible }}</td>
+                    <td>
+                      <span
+                        class="badge"
+                        [class]="
+                          lote.estado_vencimiento === 'VENCIDO'
+                            ? 'text-bg-danger'
+                            : 'text-bg-success'
+                        "
+                      >
+                        {{ lote.estado_vencimiento }}
+                      </span>
+                    </td>
+                  </tr>
+                } @empty {
+                  <tr>
+                    <td colspan="5" class="text-center text-muted py-4">
+                      El producto no tiene lotes con stock disponible.
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      </div>
+    }
+  </div>
+
+  <div class="col-12 col-xl-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold">
+        {{ editando() ? 'Editar producto' : 'Nuevo producto' }}
+      </div>
+      <div class="card-body">
+        <form [formRoot]="productoForm">
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="codigoProducto">Código</label>
+              <input
+                id="codigoProducto"
+                type="text"
+                class="form-control"
+                [formField]="productoForm.codigo"
+              />
+              @if (productoForm.codigo().touched() && productoForm.codigo().invalid()) {
+                <div class="text-danger small mt-1">El código es obligatorio.</div>
+              }
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="idCategoriaProducto">Categoría</label>
+              <select
+                id="idCategoriaProducto"
+                class="form-select"
+                [formField]="productoForm.id_categoria"
+              >
+                <option [value]="0">Seleccione una categoría</option>
+                @for (categoria of categorias(); track categoria.id_categoria) {
+                  <option [value]="categoria.id_categoria">{{ categoria.nombre }}</option>
+                }
+              </select>
+              @if (productoForm.id_categoria().touched() && productoForm.id_categoria().invalid()) {
+                <div class="text-danger small mt-1">Seleccione una categoría.</div>
+              }
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="nombreProducto">Nombre</label>
+              <input
+                id="nombreProducto"
+                type="text"
+                class="form-control"
+                [formField]="productoForm.nombre"
+              />
+              @if (productoForm.nombre().touched() && productoForm.nombre().invalid()) {
+                <div class="text-danger small mt-1">
+                  El nombre es obligatorio y debe tener al menos 2 caracteres.
+                </div>
+              }
+            </div>
+
+            <div class="col-12">
+              <label class="form-label" for="descripcionProducto">Descripción</label>
+              <textarea
+                id="descripcionProducto"
+                rows="2"
+                class="form-control"
+                [formField]="productoForm.descripcion"
+              ></textarea>
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="unidadMedida">Unidad de medida</label>
+              <input
+                id="unidadMedida"
+                type="text"
+                class="form-control"
+                placeholder="Caja, Ampolla, Frasco..."
+                [formField]="productoForm.unidad_medida"
+              />
+              @if (
+                productoForm.unidad_medida().touched() && productoForm.unidad_medida().invalid()
+              ) {
+                <div class="text-danger small mt-1">La unidad de medida es obligatoria.</div>
+              }
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="precioUnitario">Precio unitario</label>
+              <input
+                id="precioUnitario"
+                type="number"
+                step="0.01"
+                class="form-control"
+                [formField]="productoForm.precio_unitario"
+              />
+              @if (
+                productoForm.precio_unitario().touched() && productoForm.precio_unitario().invalid()
+              ) {
+                <div class="text-danger small mt-1">El precio debe ser mayor que cero.</div>
+              }
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="stockMinimo">Stock mínimo</label>
+              <input
+                id="stockMinimo"
+                type="number"
+                class="form-control"
+                [formField]="productoForm.stock_minimo"
+              />
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="fechaVencimientoProducto">Vencimiento</label>
+              <input
+                id="fechaVencimientoProducto"
+                type="date"
+                class="form-control"
+                [formField]="productoForm.fecha_vencimiento"
+              />
+            </div>
+
+            <div class="col-12">
+              <div class="form-check">
+                <input
+                  id="manejaLotes"
+                  type="checkbox"
+                  class="form-check-input"
+                  [formField]="productoForm.maneja_lotes"
+                />
+                <label class="form-check-label" for="manejaLotes">Maneja lotes</label>
+              </div>
+            </div>
+          </div>
+
+          <div class="d-flex gap-2 mt-4">
+            <button type="submit" class="btn btn-primary" [disabled]="productoForm().submitting()">
+              {{ editando() ? 'Actualizar' : 'Registrar' }}
+            </button>
+            @if (editando()) {
+              <button type="button" class="btn btn-outline-secondary" (click)="cancelarEdicion()">
+                Cancelar
+              </button>
+            }
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

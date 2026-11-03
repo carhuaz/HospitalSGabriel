@@ -12,19 +12,49 @@ App Angular 22 standalone que consume la API FastAPI de `../backend/` (puerto 80
 
 No hay lint, typecheck separado ni e2e configurados, y no hay CI. La verificación disponible es `npm run build` + `npm test`.
 
+El CLI de Angular 22 exige Node `^22.22.3 || ^24.15.0 || >=26.0.0`. Si el Node local es anterior, los comandos `ng` fallan al arrancar (no por el código); en ese caso usa el workaround:
+
+```powershell
+npx -y node@22.22.3 node_modules/@angular/cli/bin/ng.js build
+```
+
 ## Arquitectura obligatoria
 
 ```text
 src/app/
 ├── components/
-│   └── <feature>/
-│       ├── <feature>.component.html
-│       ├── <feature>.component.ts
-│       └── <feature>.component.css
+│   ├── layout/       layout.component.{ts,html}
+│   ├── login/        login.component.{ts,html}
+│   ├── dashboard/    dashboard.component.{ts,html}
+│   ├── categorias/   categorias.component.{ts,html}
+│   ├── productos/    productos.component.{ts,html}
+│   ├── entradas/     entradas.component.{ts,html}
+│   ├── salidas/      salidas.component.{ts,html}
+│   ├── movimientos/  movimientos.component.{ts,html}
+│   └── indicadores/  indicadores.component.{ts,html}
 ├── services/
-│   └── <feature>.service.ts
-└── interfaces/
-    └── <entidad>.interface.ts
+│   ├── auth.service.ts
+│   ├── categoria.service.ts
+│   ├── producto.service.ts
+│   ├── entrada.service.ts
+│   ├── salida.service.ts
+│   ├── movimiento.service.ts
+│   ├── indicador.service.ts
+│   └── api-error.ts
+├── interfaces/
+│   ├── auth.interface.ts
+│   ├── categoria.interface.ts
+│   ├── producto.interface.ts
+│   ├── entrada.interface.ts
+│   ├── salida.interface.ts
+│   ├── movimiento.interface.ts
+│   └── indicador.interface.ts
+├── guards/
+│   └── auth.guard.ts
+├── app.config.ts
+├── app.routes.ts
+├── app.ts / app.html
+└── app.spec.ts
 
 src/environments/
 ├── environment.ts
@@ -43,13 +73,21 @@ componente.html → componente.ts → service → API backend
 - **Interfaces:** viven en `src/app/interfaces/`. Tipan requests, responses y estado; no usar `any`. Reutiliza las interfaces entre services y componentes.
 - Todos los componentes son standalone (sin NgModules) y usan `templateUrl`/`styleUrl` separados, como el componente `App` existente.
 
+## Formularios (Signal Forms)
+
+- Se usa la API experimental `@angular/forms/signals`: `form()`, `FormField` (`[formField]`) y `FormRoot` (`[formRoot]`).
+- El modelo vive en un `signal<T>` y se pasa como primer argumento a `form()`; el envío se declara en `submission.action`.
+- Validadores disponibles: `required`, `minLength`, `maxLength`, `min`, `max`, `pattern`, `validate`.
+- `min`/`max` solo aplican a campos `number`. Para `<select>` usa el valor como `string` en el modelo y valida con `validate(schema.campo, ({ value }) => ...)`, convirtiendo con `Number()` al construir el payload.
+- No agregues atributos HTML `min`/`max` en inputs con `[formField]`: el validador pertenece al esquema, no al template.
+
 ## Environments y HTTP
 
-- Crear `src/environments/environment.ts` y `environment.development.ts` con `apiUrl: 'http://127.0.0.1:8000/api'`.
-- Configurar `fileReplacements` en `angular.json` para que `npm start` use el environment de desarrollo.
-- Registrar `provideHttpClient()` en `src/app/app.config.ts`.
-- Importar siempre `environment.apiUrl`; no hardcodear URLs ni duplicar el puerto 8000 en los services.
-- Los services solo deben llamar endpoints existentes del backend bajo `/api`; no inventar rutas.
+- `src/environments/environment.ts` y `environment.development.ts` ya existen con `apiUrl: 'http://127.0.0.1:8000/api'`.
+- `angular.json` tiene `fileReplacements` en la configuración `development`, de modo que `npm start` usa `environment.development.ts`.
+- `provideHttpClient()` está registrado en `src/app/app.config.ts`.
+- Importa siempre `environment.apiUrl`; no hardcodees URLs ni dupliques el puerto 8000 en los services.
+- Los services solo deben llamar endpoints existentes del backend bajo `/api`; no inventes rutas.
 
 ## Bootstrap 5
 
@@ -65,4 +103,16 @@ componente.html → componente.ts → service → API backend
 
 ## Estado actual
 
-Solo existe el shell de la app: `app.routes.ts` vacío, sin rutas, servicios ni interfaces de feature. Al implementar la primera funcionalidad, sigue la estructura y el flujo descritos arriba.
+Estructura completa y funcional **sin CSS todavía**:
+
+- Rutas lazy con `authGuard`: `/login`, `/dashboard`, `/categorias`, `/productos`, `/entradas`, `/salidas`, `/movimientos`, `/indicadores`.
+- `AuthService` guarda el usuario en `localStorage` bajo la clave `hospital-sg-usuario` (el backend no emite token).
+- Todos los componentes tienen `.ts` + `.html`; ninguno declara `styleUrl` salvo `App`.
+- `npm run build` y `npm test` pasan.
+- Pendiente: estilos por componente (`.component.css`), `styleUrl` en cada componente y ajustes finos en `src/styles.css`.
+
+## Convenciones del backend reflejadas en el frontend
+
+- Los decimales del backend llegan como **string** (`"25.50"`); en las interfaces se tipan como `string` y se convierten con `Number()` solo para mostrar/calcular.
+- `POST /api/auth/login` devuelve el objeto `Usuario`, no un JWT.
+- No inventes rutas: los endpoints usados son los de `../backend/AGENTS.md`.

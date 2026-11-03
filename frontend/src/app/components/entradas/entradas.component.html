@@ -1,0 +1,195 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h1 class="h3 mb-1">Entradas</h1>
+    <p class="text-muted mb-0">Registra compras, donaciones y devoluciones de inventario.</p>
+  </div>
+  <button type="button" class="btn btn-outline-primary" (click)="cargar()" [disabled]="cargando()">
+    Actualizar
+  </button>
+</div>
+
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
+
+@if (mensaje()) {
+  <div class="alert alert-success" role="alert">{{ mensaje() }}</div>
+}
+
+<div class="row g-4">
+  <div class="col-12 col-xl-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold">Registrar entrada</div>
+      <div class="card-body">
+        <form [formRoot]="entradaForm">
+          <div class="mb-3">
+            <label class="form-label" for="productoEntrada">Producto</label>
+            <select id="productoEntrada" class="form-select" [formField]="entradaForm.id_producto">
+              <option [value]="0">Seleccione un producto</option>
+              @for (producto of productos(); track producto.id_producto) {
+                <option [value]="producto.id_producto">
+                  {{ producto.codigo }} - {{ producto.nombre }} (stock: {{ producto.stock_actual }})
+                </option>
+              }
+            </select>
+            @if (entradaForm.id_producto().touched() && entradaForm.id_producto().invalid()) {
+              <div class="text-danger small mt-1">Seleccione un producto.</div>
+            }
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="cantidadEntrada">Cantidad</label>
+              <input
+                id="cantidadEntrada"
+                type="number"
+                class="form-control"
+                [formField]="entradaForm.cantidad"
+              />
+              @if (entradaForm.cantidad().touched() && entradaForm.cantidad().invalid()) {
+                <div class="text-danger small mt-1">La cantidad debe ser mayor que cero.</div>
+              }
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="fechaVencimientoEntrada">Vencimiento del lote</label>
+              <input
+                id="fechaVencimientoEntrada"
+                type="date"
+                class="form-control"
+                [formField]="entradaForm.fecha_vencimiento"
+              />
+            </div>
+          </div>
+
+          <div class="mb-3 mt-3">
+            <label class="form-label" for="numeroLoteEntrada">Número de lote</label>
+            <input
+              id="numeroLoteEntrada"
+              type="text"
+              class="form-control"
+              placeholder="Opcional"
+              [formField]="entradaForm.numero_lote"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="motivoEntrada">Motivo</label>
+            <input
+              id="motivoEntrada"
+              type="text"
+              class="form-control"
+              placeholder="Compra, donación, devolución..."
+              [formField]="entradaForm.motivo"
+            />
+            @if (entradaForm.motivo().touched() && entradaForm.motivo().invalid()) {
+              <div class="text-danger small mt-1">
+                El motivo es obligatorio y debe tener al menos 2 caracteres.
+              </div>
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary w-100"
+            [disabled]="entradaForm().submitting()"
+          >
+            Registrar entrada
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-7">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <form class="row g-3 align-items-end" [formRoot]="filtrosForm">
+          <div class="col-12 col-md-5">
+            <label class="form-label" for="filtroProductoEntrada">Producto</label>
+            <select
+              id="filtroProductoEntrada"
+              class="form-select"
+              [formField]="filtrosForm.id_producto"
+            >
+              <option [value]="0">Todos</option>
+              @for (producto of productos(); track producto.id_producto) {
+                <option [value]="producto.id_producto">
+                  {{ producto.codigo }} - {{ producto.nombre }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label" for="fechaInicioEntrada">Desde</label>
+            <input
+              id="fechaInicioEntrada"
+              type="date"
+              class="form-control"
+              [formField]="filtrosForm.fecha_inicio"
+            />
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label" for="fechaFinEntrada">Hasta</label>
+            <input
+              id="fechaFinEntrada"
+              type="date"
+              class="form-control"
+              [formField]="filtrosForm.fecha_fin"
+            />
+          </div>
+
+          <div class="col-12 col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold">Entradas registradas</div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Fecha</th>
+              <th>Producto</th>
+              <th>Lote</th>
+              <th class="text-end">Cantidad</th>
+              <th>Motivo</th>
+              <th class="text-end">Stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (entrada of entradas(); track entrada.id_entrada) {
+              <tr>
+                <td>{{ fechaHora(entrada.fecha) }}</td>
+                <td>
+                  <div class="fw-semibold">{{ entrada.nombre_producto }}</div>
+                  <small class="text-muted">{{ entrada.codigo_producto }}</small>
+                </td>
+                <td>
+                  <div>{{ entrada.numero_lote ?? '—' }}</div>
+                  <small class="text-muted">{{ fechaCorta(entrada.fecha_vencimiento) }}</small>
+                </td>
+                <td class="text-end fw-semibold">{{ entrada.cantidad }}</td>
+                <td>{{ entrada.motivo }}</td>
+                <td class="text-end">
+                  {{ entrada.stock_anterior ?? '—' }} → {{ entrada.stock_posterior ?? '—' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                  No hay entradas registradas.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

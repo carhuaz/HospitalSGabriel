@@ -1,0 +1,244 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h1 class="h3 mb-1">Indicadores</h1>
+    <p class="text-muted mb-0">Alertas y métricas del inventario hospitalario.</p>
+  </div>
+  <button
+    type="button"
+    class="btn btn-outline-primary"
+    (click)="cargarTodo()"
+    [disabled]="cargando()"
+  >
+    Actualizar todo
+  </button>
+</div>
+
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
+
+@if (resumen(); as r) {
+  <div class="row g-3 mb-4">
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Stock bajo</p>
+          <p class="display-6 fw-semibold mb-0 text-warning">{{ r.total_productos_stock_bajo }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Vencidos</p>
+          <p class="display-6 fw-semibold mb-0 text-danger">{{ r.total_productos_vencidos }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Próximos a vencer</p>
+          <p class="display-6 fw-semibold mb-0 text-warning">
+            {{ r.total_productos_proximos_vencer }}
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-12 col-sm-6 col-xl-3">
+      <div class="card border-0 shadow-sm h-100">
+        <div class="card-body">
+          <p class="text-muted mb-1">Valor referencial</p>
+          <p class="fs-3 fw-semibold mb-0">
+            S/ {{ numero(r.valor_referencial_inventario) | number: '1.2-2' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+}
+
+<div class="row g-4">
+  <div class="col-12 col-xl-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold">Productos con stock bajo</div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Código</th>
+              <th>Producto</th>
+              <th class="text-end">Stock</th>
+              <th class="text-end">Déficit</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (producto of stockBajo(); track producto.id_producto) {
+              <tr>
+                <td>{{ producto.codigo }}</td>
+                <td>
+                  <div class="fw-semibold">{{ producto.nombre }}</div>
+                  <small class="text-muted">{{ producto.nombre_categoria }}</small>
+                </td>
+                <td class="text-end text-danger fw-semibold">{{ producto.stock_actual }}</td>
+                <td class="text-end">{{ producto.deficit_stock }}</td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                  No hay productos con stock bajo.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-6">
+    <div class="card shadow-sm h-100">
+      <div class="card-header bg-white fw-semibold">Vencimientos</div>
+      <div class="card-body border-bottom">
+        <form class="row g-2 align-items-end" [formRoot]="vencimientosForm">
+          <div class="col-6">
+            <label class="form-label" for="diasAlerta">Días de alerta</label>
+            <input
+              id="diasAlerta"
+              type="number"
+              class="form-control"
+              [formField]="vencimientosForm.dias_alerta"
+            />
+          </div>
+          <div class="col-6">
+            <label class="form-label" for="estadoVencimiento">Estado</label>
+            <select
+              id="estadoVencimiento"
+              class="form-select"
+              [formField]="vencimientosForm.estado"
+            >
+              <option value="">Todos</option>
+              <option value="VENCIDO">Vencido</option>
+              <option value="PROXIMO_A_VENCER">Próximo a vencer</option>
+            </select>
+          </div>
+          <div class="col-12 d-grid">
+            <button type="submit" class="btn btn-primary">Consultar vencimientos</button>
+          </div>
+        </form>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Producto</th>
+              <th>Lote</th>
+              <th>Vence</th>
+              <th>Estado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (producto of vencimientos(); track producto.id_lote ?? producto.id_producto) {
+              <tr>
+                <td>
+                  <div class="fw-semibold">{{ producto.nombre }}</div>
+                  <small class="text-muted">{{ producto.cantidad_afectada }} unidades</small>
+                </td>
+                <td>{{ producto.numero_lote ?? '—' }}</td>
+                <td>{{ producto.fecha_vencimiento }}</td>
+                <td>
+                  <span class="badge" [class]="badgeVencimiento(producto.estado_vencimiento)">
+                    {{ producto.estado_vencimiento }}
+                  </span>
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="4" class="text-center text-muted py-4">
+                  No hay vencimientos para el filtro.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold">Productos con mayores salidas</div>
+      <div class="card-body border-bottom">
+        <form class="row g-2 align-items-end" [formRoot]="mayoresForm">
+          <div class="col-12 col-md-3">
+            <label class="form-label" for="mayoresFechaInicio">Desde</label>
+            <input
+              id="mayoresFechaInicio"
+              type="date"
+              class="form-control"
+              [formField]="mayoresForm.fecha_inicio"
+            />
+          </div>
+          <div class="col-12 col-md-3">
+            <label class="form-label" for="mayoresFechaFin">Hasta</label>
+            <input
+              id="mayoresFechaFin"
+              type="date"
+              class="form-control"
+              [formField]="mayoresForm.fecha_fin"
+            />
+          </div>
+          <div class="col-12 col-md-2">
+            <label class="form-label" for="topMayores">Top</label>
+            <input
+              id="topMayores"
+              type="number"
+              class="form-control"
+              [formField]="mayoresForm.top"
+            />
+          </div>
+          <div class="col-12 col-md-2 d-grid">
+            <button type="submit" class="btn btn-primary">Consultar</button>
+          </div>
+        </form>
+      </div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Código</th>
+              <th>Producto</th>
+              <th>Categoría</th>
+              <th class="text-end">Unidades salidas</th>
+              <th class="text-end">N.° salidas</th>
+              <th class="text-end">Valor estimado</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (producto of mayoresSalidas(); track producto.id_producto) {
+              <tr>
+                <td>{{ producto.codigo }}</td>
+                <td class="fw-semibold">{{ producto.nombre }}</td>
+                <td>{{ producto.nombre_categoria }}</td>
+                <td class="text-end">{{ producto.total_unidades_salidas }}</td>
+                <td class="text-end">{{ producto.numero_salidas }}</td>
+                <td class="text-end">
+                  S/ {{ numero(producto.valor_estimado_salidas) | number: '1.2-2' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">
+                  No hay salidas registradas para el periodo.
+                </td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

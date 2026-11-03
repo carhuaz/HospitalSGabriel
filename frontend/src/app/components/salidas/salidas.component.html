@@ -1,0 +1,207 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h1 class="h3 mb-1">Salidas</h1>
+    <p class="text-muted mb-0">Registra la dispensación de productos hacia áreas hospitalarias.</p>
+  </div>
+  <button type="button" class="btn btn-outline-primary" (click)="cargar()" [disabled]="cargando()">
+    Actualizar
+  </button>
+</div>
+
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
+
+@if (mensaje()) {
+  <div class="alert alert-success" role="alert">{{ mensaje() }}</div>
+}
+
+<div class="row g-4">
+  <div class="col-12 col-xl-5">
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold">Registrar salida</div>
+      <div class="card-body">
+        <form [formRoot]="salidaForm">
+          <div class="mb-3">
+            <label class="form-label" for="productoSalida">Producto</label>
+            <select id="productoSalida" class="form-select" [formField]="salidaForm.id_producto">
+              <option [value]="0">Seleccione un producto</option>
+              @for (producto of productos(); track producto.id_producto) {
+                <option [value]="producto.id_producto">
+                  {{ producto.codigo }} - {{ producto.nombre }} (stock: {{ producto.stock_actual }})
+                </option>
+              }
+            </select>
+            @if (salidaForm.id_producto().touched() && salidaForm.id_producto().invalid()) {
+              <div class="text-danger small mt-1">Seleccione un producto.</div>
+            }
+          </div>
+
+          <div class="row g-3">
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="cantidadSalida">Cantidad</label>
+              <input
+                id="cantidadSalida"
+                type="number"
+                class="form-control"
+                [formField]="salidaForm.cantidad"
+              />
+              @if (salidaForm.cantidad().touched() && salidaForm.cantidad().invalid()) {
+                <div class="text-danger small mt-1">La cantidad debe ser mayor que cero.</div>
+              }
+            </div>
+
+            <div class="col-12 col-md-6">
+              <label class="form-label" for="areaDestino">Área de destino</label>
+              <input
+                id="areaDestino"
+                type="text"
+                class="form-control"
+                placeholder="Emergencia, Laboratorio..."
+                [formField]="salidaForm.area_destino"
+              />
+              @if (salidaForm.area_destino().touched() && salidaForm.area_destino().invalid()) {
+                <div class="text-danger small mt-1">El área de destino es obligatoria.</div>
+              }
+            </div>
+          </div>
+
+          <div class="mb-3 mt-3">
+            <label class="form-label" for="numeroLoteSalida">Número de lote</label>
+            <input
+              id="numeroLoteSalida"
+              type="text"
+              class="form-control"
+              placeholder="Opcional; si se omite se aplica FEFO"
+              [formField]="salidaForm.numero_lote"
+            />
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label" for="motivoSalida">Motivo</label>
+            <input
+              id="motivoSalida"
+              type="text"
+              class="form-control"
+              placeholder="Dispensación hospitalaria"
+              [formField]="salidaForm.motivo"
+            />
+            @if (salidaForm.motivo().touched() && salidaForm.motivo().invalid()) {
+              <div class="text-danger small mt-1">
+                El motivo es obligatorio y debe tener al menos 2 caracteres.
+              </div>
+            }
+          </div>
+
+          <button
+            type="submit"
+            class="btn btn-primary w-100"
+            [disabled]="salidaForm().submitting()"
+          >
+            Registrar salida
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-12 col-xl-7">
+    <div class="card shadow-sm mb-4">
+      <div class="card-body">
+        <form class="row g-3 align-items-end" [formRoot]="filtrosForm">
+          <div class="col-12 col-md-4">
+            <label class="form-label" for="filtroProductoSalida">Producto</label>
+            <select
+              id="filtroProductoSalida"
+              class="form-select"
+              [formField]="filtrosForm.id_producto"
+            >
+              <option [value]="0">Todos</option>
+              @for (producto of productos(); track producto.id_producto) {
+                <option [value]="producto.id_producto">
+                  {{ producto.codigo }} - {{ producto.nombre }}
+                </option>
+              }
+            </select>
+          </div>
+
+          <div class="col-12 col-md-3">
+            <label class="form-label" for="filtroArea">Área</label>
+            <input
+              id="filtroArea"
+              type="text"
+              class="form-control"
+              [formField]="filtrosForm.area_destino"
+            />
+          </div>
+
+          <div class="col-12 col-md-2">
+            <label class="form-label" for="fechaInicioSalida">Desde</label>
+            <input
+              id="fechaInicioSalida"
+              type="date"
+              class="form-control"
+              [formField]="filtrosForm.fecha_inicio"
+            />
+          </div>
+
+          <div class="col-12 col-md-2">
+            <label class="form-label" for="fechaFinSalida">Hasta</label>
+            <input
+              id="fechaFinSalida"
+              type="date"
+              class="form-control"
+              [formField]="filtrosForm.fecha_fin"
+            />
+          </div>
+
+          <div class="col-12 col-md-1 d-grid">
+            <button type="submit" class="btn btn-primary">Filtrar</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <div class="card shadow-sm">
+      <div class="card-header bg-white fw-semibold">Salidas registradas</div>
+      <div class="table-responsive">
+        <table class="table table-hover align-middle mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>Fecha</th>
+              <th>Producto</th>
+              <th>Área</th>
+              <th>Lote</th>
+              <th class="text-end">Cantidad</th>
+              <th class="text-end">Stock</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (salida of salidas(); track salida.id_salida) {
+              <tr>
+                <td>{{ fechaHora(salida.fecha) }}</td>
+                <td>
+                  <div class="fw-semibold">{{ salida.nombre_producto }}</div>
+                  <small class="text-muted">{{ salida.codigo_producto }}</small>
+                </td>
+                <td>{{ salida.area_destino }}</td>
+                <td>
+                  <div>{{ salida.numero_lote ?? '—' }}</div>
+                  <small class="text-muted">{{ fechaCorta(salida.fecha_vencimiento) }}</small>
+                </td>
+                <td class="text-end fw-semibold">{{ salida.cantidad }}</td>
+                <td class="text-end">
+                  {{ salida.stock_anterior ?? '—' }} → {{ salida.stock_posterior ?? '—' }}
+                </td>
+              </tr>
+            } @empty {
+              <tr>
+                <td colspan="6" class="text-center text-muted py-4">No hay salidas registradas.</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

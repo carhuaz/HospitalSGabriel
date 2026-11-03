@@ -1,0 +1,127 @@
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+  <div>
+    <h1 class="h3 mb-1">Movimientos</h1>
+    <p class="text-muted mb-0">Historial de entradas y salidas del inventario.</p>
+  </div>
+  <button type="button" class="btn btn-outline-primary" (click)="cargar()" [disabled]="cargando()">
+    Actualizar
+  </button>
+</div>
+
+@if (error()) {
+  <div class="alert alert-danger" role="alert">{{ error() }}</div>
+}
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <form class="row g-3 align-items-end" [formRoot]="filtrosForm">
+      <div class="col-12 col-md-3">
+        <label class="form-label" for="filtroProductoMovimiento">Producto</label>
+        <select
+          id="filtroProductoMovimiento"
+          class="form-select"
+          [formField]="filtrosForm.id_producto"
+        >
+          <option [value]="0">Todos</option>
+          @for (producto of productos(); track producto.id_producto) {
+            <option [value]="producto.id_producto">
+              {{ producto.codigo }} - {{ producto.nombre }}
+            </option>
+          }
+        </select>
+      </div>
+
+      <div class="col-12 col-md-2">
+        <label class="form-label" for="tipoMovimiento">Tipo</label>
+        <select id="tipoMovimiento" class="form-select" [formField]="filtrosForm.tipo_movimiento">
+          <option value="">Todos</option>
+          <option value="ENTRADA">Entrada</option>
+          <option value="SALIDA">Salida</option>
+        </select>
+      </div>
+
+      <div class="col-12 col-md-2">
+        <label class="form-label" for="areaMovimiento">Área destino</label>
+        <input
+          id="areaMovimiento"
+          type="text"
+          class="form-control"
+          [formField]="filtrosForm.area_destino"
+        />
+      </div>
+
+      <div class="col-12 col-md-2">
+        <label class="form-label" for="fechaInicioMovimiento">Desde</label>
+        <input
+          id="fechaInicioMovimiento"
+          type="date"
+          class="form-control"
+          [formField]="filtrosForm.fecha_inicio"
+        />
+      </div>
+
+      <div class="col-12 col-md-2">
+        <label class="form-label" for="fechaFinMovimiento">Hasta</label>
+        <input
+          id="fechaFinMovimiento"
+          type="date"
+          class="form-control"
+          [formField]="filtrosForm.fecha_fin"
+        />
+      </div>
+
+      <div class="col-12 col-md-1 d-grid">
+        <button type="submit" class="btn btn-primary">Filtrar</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="card shadow-sm">
+  <div class="card-header bg-white fw-semibold">Historial de movimientos</div>
+  <div class="table-responsive">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-light">
+        <tr>
+          <th>Fecha</th>
+          <th>Tipo</th>
+          <th>Producto</th>
+          <th>Lote</th>
+          <th class="text-end">Cantidad</th>
+          <th>Motivo</th>
+          <th>Área</th>
+          <th class="text-end">Stock</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (movimiento of movimientos(); track movimiento.id_movimiento) {
+          <tr>
+            <td>{{ fechaHora(movimiento.fecha) }}</td>
+            <td>
+              <span class="badge" [class]="badgeTipo(movimiento.tipo_movimiento)">
+                {{ movimiento.tipo_movimiento }}
+              </span>
+            </td>
+            <td>
+              <div class="fw-semibold">{{ movimiento.nombre_producto }}</div>
+              <small class="text-muted">{{ movimiento.codigo_producto }}</small>
+            </td>
+            <td>{{ movimiento.numero_lote ?? '—' }}</td>
+            <td class="text-end fw-semibold">{{ movimiento.cantidad }}</td>
+            <td>{{ movimiento.motivo }}</td>
+            <td>{{ movimiento.area_destino ?? '—' }}</td>
+            <td class="text-end">
+              {{ movimiento.stock_anterior }} → {{ movimiento.stock_posterior }}
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="8" class="text-center text-muted py-4">
+              No hay movimientos que coincidan con el filtro.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</div>
